@@ -16,7 +16,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es6",
-    "moduleResolution": "node",
+    "moduleResolution": "node", 
     "types": [
       "node"
     ],
@@ -31,4 +31,4 @@
   "exclude": [
     "src/public/"
   ]
-}
+}   
