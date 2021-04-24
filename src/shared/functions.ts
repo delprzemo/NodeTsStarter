@@ -5,7 +5,3 @@ export const pErr = (err: Error) : void => {
         logger.error(err);
     }
 };
-
-export const getRandomInt = () : number => {
-    return Math.floor(Math.random() * 1_000_000_000_000);
-};

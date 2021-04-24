@@ -1,9 +1,7 @@
-import { Tedis } from 'tedis';
 import { User } from 'src/entities/User';
 import { getConnection } from 'typeorm';
 
 export class UserService {
-    private tedis: Tedis;
 
     public async getAll(): Promise<User[]> {
         const users = await getConnection()
@@ -13,7 +11,6 @@ export class UserService {
 
         return users;
     }
-
 
     public async get(id: string): Promise<User | undefined> {
         const user = await getConnection()

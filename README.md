@@ -1,1 +1,1 @@
-TypeScript starter project
+TypeScript NodeJs starter project

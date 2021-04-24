@@ -17,7 +17,7 @@ export async function intializeDB(): Promise<void> {
   logger.info('Database successfully initialized');
 }
 
-export function initializeCache(port: number | undefined) : unknown {
+export function initializeCache(port: number | undefined) : Tedis {
   const tedis = new Tedis({
     port: port,
     host: "127.0.0.1"

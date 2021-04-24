@@ -37,6 +37,7 @@ describe('Users Routes', () => {
             .createQueryBuilder()
             .delete()
             .from(User)
+            .where("id IN(:...ids)", { ids: ["1","2"] })
             .execute();
     }
 
@@ -60,8 +61,8 @@ describe('Users Routes', () => {
                 .end((err: Error, res: Response) => {
                     pErr(err);
                     expect(res.status).toBe(OK);
-                    const retUsers = res.body.users;
-                    expect(retUsers[0].firstName).toEqual(testUsers[0].firstName);
+                    const retUsers = res.body.users as User[];
+                    expect(retUsers.find(x=>x.firstName == testUsers[0].firstName)?.id).toEqual(testUsers[0].id);
                     expect(res.body.error).toBeUndefined();
                     done();
                 });
