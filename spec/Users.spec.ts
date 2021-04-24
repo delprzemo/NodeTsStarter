@@ -14,12 +14,14 @@ describe('Users Routes', () => {
     const usersPath = '/api/users';
     const getUsersPath = `${usersPath}/all`;
 
+    // Delcaring agent (like TestBed => mocked env)
     let agent: SuperTest<Test>;
-    const testUsers = [
-        { firstName: 'Jack', lastName: 'Ripper', age: 14 },
-        { firstName: 'Elon', lastName: 'Carman', age: 63 }
+    const testUsers: User[] = [
+        { firstName: 'Jack', lastName: 'Ripper', age: 14, id: "1" },
+        { firstName: 'Elon', lastName: 'Carman', age: 63, id: "2" }
     ]
 
+    // Add data to db
     async function createTestData() {
         await getConnection()
             .createQueryBuilder()
@@ -29,6 +31,7 @@ describe('Users Routes', () => {
             .execute();
     }
 
+    // remove data from db
     async function destroyTestData() {
         await getConnection()
             .createQueryBuilder()
@@ -38,6 +41,7 @@ describe('Users Routes', () => {
     }
 
     beforeAll(async () => {
+        // assign app to test agent
         agent = supertest.agent(app);
         await intializeDB();
         await destroyTestData();
@@ -57,7 +61,7 @@ describe('Users Routes', () => {
                     pErr(err);
                     expect(res.status).toBe(OK);
                     const retUsers = res.body.users;
-                    expect(retUsers).toEqual(testUsers);
+                    expect(retUsers[0].firstName).toEqual(testUsers[0].firstName);
                     expect(res.body.error).toBeUndefined();
                     done();
                 });

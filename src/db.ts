@@ -22,6 +22,6 @@ export function initializeCache(port: number | undefined) : unknown {
     port: port,
     host: "127.0.0.1"
   });
-  logger.info('Redis cache successfully initialized');
+
   return tedis;
 }

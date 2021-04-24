@@ -4,9 +4,11 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { getConnection } from "typeorm";
 import { User } from "../entities/User";
 import { paramMissingError } from '../shared/constants';
+import { UserService } from 'src/users/users.service';
 
 // Init shared
 const router = Router();
+const userService = new UserService();
 
 
 /******************************************************************************
@@ -14,10 +16,7 @@ const router = Router();
  ******************************************************************************/
 
 router.get('/all', async (req: Request, res: Response) => {
-    const users = await getConnection()
-        .getRepository(User)
-        .createQueryBuilder("user")
-        .getMany();
+    const users = await userService.getAll();
     return res.status(OK).json({users});
 });
 
@@ -27,12 +26,7 @@ router.get('/all', async (req: Request, res: Response) => {
 
 router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params as ParamsDictionary;
-    const user = await getConnection()
-        .createQueryBuilder()
-        .select("user")
-        .from(User, "user")
-        .where("user.id = :id", { id: id })
-        .getOne();
+    const user = await userService.get(id);
     if (!user) {
         res.status(404);
         res.end();
@@ -46,16 +40,6 @@ router.get('/:id', async (req: Request, res: Response) => {
  *                       Add One - "POST /api/users/add"
  ******************************************************************************/
 
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0;
-      const v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-
-  
-
 router.post('/add', async (req: Request, res: Response) => {
     const user = req.body;
 
@@ -64,19 +48,13 @@ router.post('/add', async (req: Request, res: Response) => {
             error: paramMissingError,
         });
     }
-    await getConnection()
-        .createQueryBuilder()
-        .insert()
-        .into(User)
-        .values([
-            {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                age: user.age,
-                id: uuidv4()
-            }
-        ])
-        .execute();
+
+    await userService.add({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        age: user.age
+    });
+
     return res.status(CREATED).end();
 });
 
@@ -92,16 +70,14 @@ router.put('/update', async (req: Request, res: Response) => {
             error: paramMissingError,
         });
     }
-    await getConnection()
-        .createQueryBuilder()
-        .update(User)
-        .set({ 
-            firstName: user.firstName, 
-            lastName: user.lastName,
-            age: user.age
-        })
-        .where("id = :id", { id: user.id })
-        .execute();
+
+    await userService.update({
+        firstName: user.firstName, 
+        lastName: user.lastName,
+        age: user.age,
+        id: user.id
+    })
+
     return res.status(OK).end();
 });
 
@@ -112,12 +88,8 @@ router.put('/update', async (req: Request, res: Response) => {
 
 router.delete('/delete/:id', async (req: Request, res: Response) => {
     const { id } = req.params as ParamsDictionary;
-    await getConnection()
-        .createQueryBuilder()
-        .delete()
-        .from(User)
-        .where("id = :id", { id: id })
-        .execute();
+
+    await userService.delete(id);
     return res.status(OK).end();
 });
 
