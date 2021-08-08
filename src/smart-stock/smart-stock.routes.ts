@@ -7,8 +7,15 @@ const router = Router();
 const service = new SmartStockService();
 
 router.post('/learn', async (req: Request, res: Response) => {
-    const body = req.body;
+    const body = req.body as {input: any[], output: any[], file: string};
+    await service.trainModel(body.input, body.output, body.file);
     return res.status(OK).end();
+});
+
+router.post('/predict', async (req: Request, res: Response) => {
+    const body = req.body as {input: any[], file: string};
+    const predict = await service.predict(body.input, body.file); 
+    return res.status(OK).json({predict});
 });
 
 /******************************************************************************
