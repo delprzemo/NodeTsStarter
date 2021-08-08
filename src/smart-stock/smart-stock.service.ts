@@ -8,11 +8,9 @@ export class SmartStockService {
         return "";
     }
 
-    public async trainModel(inputs: any[], outputs: any[], file: string): Promise<{model: any, stats: any}> {
+    public async trainModel(inputs: any[], outputs: any[], file: string, n_epochs: number, learning_rate: number): Promise<{model: any, stats: any}> {
 
         const window_size = inputs[0].length;
-        const n_epochs = 20;
-        const learning_rate = 0.001;
         const n_layers = 2;
 
         const input_layer_shape = window_size;
