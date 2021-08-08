@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import UserRouter from './users/users.routes';
+import SmartStockRouter from './smart-stock/smart-stock.routes';
 
 // Init router and path
 const router = Router();
 
 // Add sub-routes
-router.use('/users', UserRouter);
+router.use('/smart-stock', SmartStockRouter);
 
 // Export the base-router
 export default router;
